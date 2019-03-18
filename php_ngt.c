@@ -129,7 +129,7 @@ PHP_METHOD(ngt, insert)
 	size = zend_hash_num_elements(ht);
 	data = (float*)safe_emalloc(sizeof(float), size, 0);
 
-	for (idx=0; idx<num_params; idx++) {
+	for (idx=0; idx<size; idx++) {
 		zval *value = zend_hash_get_current_data(ht);
 		data[idx] = (float)zval_get_double(value);
 		zend_hash_move_forward(ht);
@@ -150,7 +150,7 @@ PHP_METHOD(ngt, search)
 	zval *array;
 	zend_long row = 10;
 	double epsilon = 0.1;
-	zend_long numThreads = -1;
+	zend_long edgeSize = -1;
 
 	HashTable *ht;
 	float *query;
@@ -158,7 +158,7 @@ PHP_METHOD(ngt, search)
 	NGTStr str;
 
 	ngt_obj = Z_NGT_P(object);
-	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "z|ldl", &array, &row, &epsilon, numThreads)) {
+	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "z|ldl", &array, &row, &epsilon, &edgeSize)) {
 		return;
 	}
 
@@ -166,9 +166,9 @@ PHP_METHOD(ngt, search)
 	size = zend_hash_num_elements(ht);
 	query = (float*)safe_emalloc(sizeof(float), size, 0);
 
-	for (idx=0; idx<num_params; idx++) {
+	for (idx=0; idx<size; idx++) {
 		zval *value = zend_hash_get_current_data(ht);
-		data[idx] = (float)zval_get_double(value);
+		query[idx] = (float)zval_get_double(value);
 		zend_hash_move_forward(ht);
 	}
 

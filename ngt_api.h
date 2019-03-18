@@ -52,13 +52,13 @@ NGT_API void NgtCreateDB(
 NGT_API void NgtOpen(NgtHandle handle, const char* path, int rdOnly);
 NGT_API void NgtInsert(
     NgtHandle handle, 
-    const float* data,
+    float* data,
     int objectCount, 
     int numThreads
 );
 NGT_API NGTStr NgtSearch(
     NgtHandle handle, 
-    const float* query, 
+    float* query, 
     int row,
     float epsilon,
     int edgeSize

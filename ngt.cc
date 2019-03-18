@@ -71,6 +71,20 @@ void Index::create(
 }
 
 /**
+ * get dimension
+ *
+ * @access public
+ * @return int
+ */
+int Index::getDimension()
+{
+    NGT::Property prop;
+    NGT::Index::getProperty(prop);
+
+    return prop.dimension;
+}
+
+/**
  * batch Insert
  *
  * @access public

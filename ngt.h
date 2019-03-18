@@ -20,6 +20,7 @@ public:
         const std::string distanceType = "L2", 
         const std::string objectType = "Float"
     );
+    int getDimension();
     void batchInsert(std::vector<float> data, std::size_t objectCount = 1, std::size_t numThreads = 8);
     int insert(std::vector<float> data);
     std::vector<std::pair<int, float>> search(

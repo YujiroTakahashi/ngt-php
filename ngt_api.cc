@@ -116,11 +116,18 @@ NGT_API void NgtOpen(NgtHandle handle, const char* path, int rdOnly)
  * @param  const char* path
  * @return void
  */
-void NgtInsert(NgtHandle handle, const float* data, int objectCount, int numThreads)
+void NgtInsert(NgtHandle handle, float* data, int objectCount, int numThreads)
 {
     croco::Index *index = static_cast<croco::Index*>(handle);
 
-    std::vector<float> vdata(std::begin(data), std::end(data));
+    int dim = index->getDimension();
+    std::vector<float> vdata;
+
+    for (int cnt=0; cnt < objectCount; cnt++) {
+        for (int idx=0; idx<dim; idx++) {
+            vdata.push_back(data[cnt + idx]);
+        }
+    }
     index->batchInsert(vdata, objectCount, numThreads);
 }
 
@@ -132,11 +139,16 @@ void NgtInsert(NgtHandle handle, const float* data, int objectCount, int numThre
  * @param  const char* path
  * @return int
  */
-NGTStr NgtSearch(NgtHandle handle, const float* query, int row, float epsilon, int edgeSize)
+NGTStr NgtSearch(NgtHandle handle, float* query, int row, float epsilon, int edgeSize)
 {
     croco::Index *index = static_cast<croco::Index*>(handle);
 
-    std::vector<float> vquery(std::begin(query), std::end(query));
+    int dim = index->getDimension();
+    std::vector<float> vquery;
+    for (int idx=0; idx<dim; idx++) {
+        vquery.push_back(query[idx]);
+    }
+
     std::vector<std::pair<int, float>> result = index->search(vquery, row, epsilon, edgeSize);
 
     nlohmann::json retj;
@@ -184,7 +196,12 @@ NGTStr NgtGetObject(NgtHandle handle, int id)
     croco::Index *index = static_cast<croco::Index*>(handle);
     std::vector<float> object = index->getObject(id);
 
-    nlohmann::json retj = nlohmann::json::parse(object.begin(), object.end());
+    nlohmann::json retj;
+    int idx = 0;
+    for (const auto &row : object) {
+        retj[idx] = row;
+        idx++;
+    }
 
     std::string retstr = retj.dump();
     NGTStr retval = new struct _NGTStr;

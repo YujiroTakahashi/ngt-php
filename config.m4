@@ -42,5 +42,5 @@ if test "$PHP_NGT" != "no"; then
   CFLAGS="-O3 -funroll-loops"
   CXXFLAGS="-pthread -std=c++14 -O3 -funroll-loops"
 
-  PHP_NEW_EXTENSION(ngt, ngt.cc ngt_api.cc ngt.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+  PHP_NEW_EXTENSION(ngt, ngt.cc ngt_api.cc php_ngt.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi
