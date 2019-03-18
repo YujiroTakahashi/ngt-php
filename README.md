@@ -66,7 +66,7 @@ NGT {
 Instantiates a NGT object.
 
 ```php
-$index = new NGT();
+$index = new Croco\NGT\Index();
 ```
 
 -----
@@ -144,7 +144,7 @@ echo $index->getObject(3);
 ### <a name="createdb">int NGT::createDB()
 
 ```php
-Index::createDB(
+Croco\NGT\Index::CreateDB(
     'index',
     300
 );
