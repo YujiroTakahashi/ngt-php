@@ -29,9 +29,9 @@ static zend_object_handlers ngt_object_handlers;
 /* Class entries */
 zend_class_entry *php_ngt_sc_entry;
 
-/* {{{ proto void ngt::createDB()
+/* {{{ proto void ngt::CreateDB()
  */
-PHP_METHOD(ngt, createDB)
+PHP_METHOD(ngt, CreateDB)
 {
 	char *path;
 	size_t path_len;
@@ -259,7 +259,7 @@ ZEND_END_ARG_INFO()
 
 /* {{{ php_sngt_class_methods */
 static zend_function_entry php_ngt_class_methods[] = {
-	PHP_ME(ngt, createDB,     arginfo_ngt_six,      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(ngt, CreateDB,     arginfo_ngt_six,      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(ngt, __construct,  arginfo_ngt_void,	    ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME(ngt, open,         arginfo_ngt_open,	    ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, insert,       arginfo_ngt_insert,   ZEND_ACC_PUBLIC)
@@ -315,7 +315,7 @@ PHP_MINIT_FUNCTION(ngt)
 	memcpy(&ngt_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
 	/* Register Ngt Class */
-	INIT_CLASS_ENTRY(ce, "Ngt", php_ngt_class_methods);
+	INIT_CLASS_ENTRY(ce, "Croco\\NGT\\Index", php_ngt_class_methods);
 	ce.create_object = php_ngt_object_new;
 	ngt_object_handlers.offset = XtOffsetOf(php_ngt_object, zo);
 	ngt_object_handlers.clone_obj = NULL;
