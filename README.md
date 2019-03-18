@@ -78,7 +78,7 @@ open a database.
 ```php
 
 $database = 'index';
-$index->opan($database);
+$index->open($database);
 ```
 
 -----
