@@ -155,7 +155,7 @@ PHP_METHOD(ngt, search)
 	HashTable *ht;
 	float *query;
 	int idx, size;
-	NGTStr str;
+	NGTStr json;
 
 	ngt_obj = Z_NGT_P(object);
 	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "z|ldl", &array, &row, &epsilon, &edgeSize)) {
@@ -172,10 +172,11 @@ PHP_METHOD(ngt, search)
 		zend_hash_move_forward(ht);
 	}
 
-	str = NgtSearch(ngt_obj->ngt, query, row, (float)epsilon, edgeSize);
+	json = NgtSearch(ngt_obj->ngt, query, row, (float)epsilon, edgeSize);
 
-	ZVAL_STRINGL(return_value, str->buff, str->len);
-	NgtStrFree(str);
+	array_init(return_value);
+	php_json_decode(return_value, json->buff, json->len, 1, PHP_JSON_PARSER_DEFAULT_DEPTH);
+	NgtStrFree(json);
 	efree((float*)query);
 }
 /* }}} */
@@ -205,16 +206,19 @@ PHP_METHOD(ngt, getObject)
 	php_ngt_object *ngt_obj;
 	zval *object = getThis();
 	zend_long id;
-	NGTStr str;
+	NGTStr json;
 
 	ngt_obj = Z_NGT_P(object);
 
 	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &id)) {
 		return;
 	}
-	str = NgtGetObject(ngt_obj->ngt, id);
-	ZVAL_STRINGL(return_value, str->buff, str->len);
-	NgtStrFree(str);
+
+	json = NgtGetObject(ngt_obj->ngt, id);
+
+	array_init(return_value);
+	php_json_decode(return_value, json->buff, json->len, 1, PHP_JSON_PARSER_DEFAULT_DEPTH);
+	NgtStrFree(json);
 }
 /* }}} */
 
