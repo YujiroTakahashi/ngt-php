@@ -182,10 +182,22 @@ Croco\NGT\Index::CreateDB(
     10,         // edge size for creation
     40,         // edge size for search
     'L2',       // distance type
-    'Float'     // object type
+    'Float'     // object type [Integer, Float]
 );
 
 
 $index = new Croco\NGT\Index();
 $index->open('index');
 ```
+
+#### DistanceType
+| 距離関数          | 内容 |
+|:-----------------|:----------|
+| None             | なし |
+| L1               | L1距離 |
+| L2               | L2距離（デフォルト） |
+| Hamming          | ハミング距離 |
+| Angle            | 角度 |
+| Cosine           | コサイン類似度 |
+| NormalizedAngle  | 角度：正規化して保存 |
+| NormalizedCosine | コサイン類似度：正規化して保存 |
