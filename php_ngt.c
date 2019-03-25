@@ -115,31 +115,72 @@ PHP_METHOD(ngt, insert)
 	zval *array;
 	zend_long objectCount = 1;
 	zend_long numThreads = 4;
-
+	smart_str buff = {0};
 	HashTable *ht;
-	float *data;
-	int idx, size;
+	int size;
 
 	ngt_obj = Z_NGT_P(object);
 	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "z|ll", &array, &objectCount, &numThreads)) {
 		return;
 	}
 
+	if (NgtEmptyIndex(ngt_obj->ngt)) {
+		zend_throw_exception(zend_ce_exception, "Unable to open database.", 0);
+		return;
+	}
+
 	ht = Z_ARRVAL_P(array);
 	size = zend_hash_num_elements(ht);
-	data = (float*)safe_emalloc(sizeof(float), size, 0);
+	if (size != NgtGetDimension(ngt_obj->ngt)) {
+		zend_throw_exception(zend_ce_exception, "The number of dimensions does not match.", 0);
+		return;
+	}
+
+	php_json_encode(&buff, array, PHP_JSON_NUMERIC_CHECK);
+	NgtInsert(ngt_obj->ngt, (const char*)ZSTR_VAL(buff.s), ZSTR_LEN(buff.s), objectCount, numThreads);
+}
+/* }}} */
+
+/* {{{ proto void ngt::insertList(array data[, int numThreads])
+ */
+PHP_METHOD(ngt, insertList)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	zval *array;
+	zend_long numThreads = 4;
+	HashTable *ht;
+	int idx, size, dim;
+
+	ngt_obj = Z_NGT_P(object);
+	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "z|ll", &array, &numThreads)) {
+		return;
+	}
+
+	if (NgtEmptyIndex(ngt_obj->ngt)) {
+		zend_throw_exception(zend_ce_exception, "Unable to open database.", 0);
+		return;
+	}
+
+	ht = Z_ARRVAL_P(array);
+	size = zend_hash_num_elements(ht);
+	dim = NgtGetDimension(ngt_obj->ngt);
 
 	for (idx=0; idx<size; idx++) {
 		zval *value = zend_hash_get_current_data(ht);
-		data[idx] = (float)zval_get_double(value);
+		smart_str buff = {0};
+		HashTable *_ht = Z_ARRVAL_P(value);
+		int _size = zend_hash_num_elements(_ht);
+
+		if (dim == _size) {
+			php_json_encode(&buff, value, PHP_JSON_NUMERIC_CHECK);
+			NgtInsert(ngt_obj->ngt, (const char*)ZSTR_VAL(buff.s), ZSTR_LEN(buff.s), 1, numThreads);
+		}
 		zend_hash_move_forward(ht);
 	}
-
-	NgtInsert(ngt_obj->ngt, data, objectCount, numThreads);
-
-	efree((float*)data);
 }
 /* }}} */
+
 
 /* {{{ proto mixed ngt::search(array query[, int row, float epsilon, int edgeSize])
  */
@@ -151,33 +192,34 @@ PHP_METHOD(ngt, search)
 	zend_long row = 10;
 	double epsilon = 0.1;
 	zend_long edgeSize = -1;
-
-	HashTable *ht;
-	float *query;
-	int idx, size;
+	smart_str buff = {0};
 	NGTStr json;
+	HashTable *ht;
+	int size;
 
 	ngt_obj = Z_NGT_P(object);
 	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "z|ldl", &array, &row, &epsilon, &edgeSize)) {
 		return;
 	}
 
-	ht = Z_ARRVAL_P(array);
-	size = zend_hash_num_elements(ht);
-	query = (float*)safe_emalloc(sizeof(float), size, 0);
-
-	for (idx=0; idx<size; idx++) {
-		zval *value = zend_hash_get_current_data(ht);
-		query[idx] = (float)zval_get_double(value);
-		zend_hash_move_forward(ht);
+	if (NgtEmptyIndex(ngt_obj->ngt)) {
+		zend_throw_exception(zend_ce_exception, "Unable to open database.", 0);
+		return;
 	}
 
-	json = NgtSearch(ngt_obj->ngt, query, row, (float)epsilon, edgeSize);
+	ht = Z_ARRVAL_P(array);
+	size = zend_hash_num_elements(ht);
+	if (size != NgtGetDimension(ngt_obj->ngt)) {
+		zend_throw_exception(zend_ce_exception, "The number of dimensions does not match.", 0);
+		return;
+	}
+
+	php_json_encode(&buff, array, PHP_JSON_NUMERIC_CHECK);
+	json = NgtSearch(ngt_obj->ngt, (const char*)ZSTR_VAL(buff.s), ZSTR_LEN(buff.s), row, (float)epsilon, edgeSize);
 
 	array_init(return_value);
 	php_json_decode(return_value, json->buff, json->len, 1, PHP_JSON_PARSER_DEFAULT_DEPTH);
 	NgtStrFree(json);
-	efree((float*)query);
 }
 /* }}} */
 
@@ -195,6 +237,12 @@ PHP_METHOD(ngt, remove)
 	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &id)) {
 		return;
 	}
+
+	if (NgtEmptyIndex(ngt_obj->ngt)) {
+		zend_throw_exception(zend_ce_exception, "Unable to open database.", 0);
+		return;
+	}
+
 	NgtRemove(ngt_obj->ngt, id);
 }
 /* }}} */
@@ -211,6 +259,11 @@ PHP_METHOD(ngt, getObject)
 	ngt_obj = Z_NGT_P(object);
 
 	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "l", &id)) {
+		return;
+	}
+
+	if (NgtEmptyIndex(ngt_obj->ngt)) {
+		zend_throw_exception(zend_ce_exception, "Unable to open database.", 0);
 		return;
 	}
 
@@ -242,6 +295,11 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_insert, 0, 0, 1)
 	ZEND_ARG_INFO(0, numThreads)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_insertL, 0, 0, 1)
+	ZEND_ARG_INFO(0, data)
+	ZEND_ARG_INFO(0, numThreads)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_search, 0, 0, 1)
 	ZEND_ARG_INFO(0, query)
 	ZEND_ARG_INFO(0, size)
@@ -267,6 +325,7 @@ static zend_function_entry php_ngt_class_methods[] = {
 	PHP_ME(ngt, __construct,  arginfo_ngt_void,	    ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME(ngt, open,         arginfo_ngt_open,	    ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, insert,       arginfo_ngt_insert,   ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, insertList,   arginfo_ngt_insertL,  ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, search,       arginfo_ngt_search,   ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, remove,       arginfo_ngt_id,       ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, getObject,    arginfo_ngt_id,       ZEND_ACC_PUBLIC)

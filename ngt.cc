@@ -71,6 +71,17 @@ void Index::create(
 }
 
 /**
+ * index is empty
+ *
+ * @access public
+ * @return bool
+ */
+bool Index::emptyIndex()
+{
+    return (index == 0);
+}
+
+/**
  * get dimension
  *
  * @access public

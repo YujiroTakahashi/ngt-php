@@ -9,7 +9,7 @@ extern zend_module_entry ngt_module_entry;
 #define phpext_ngt_ptr &ngt_module_entry
 
 ZEND_BEGIN_MODULE_GLOBALS(ngt)
-	char *model_dir;
+	char *index_dir;
 ZEND_END_MODULE_GLOBALS(ngt)
 
 #ifdef ZTS

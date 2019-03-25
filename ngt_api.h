@@ -50,15 +50,17 @@ NGT_API void NgtCreateDB(
     const char* objectType
 );
 NGT_API void NgtOpen(NgtHandle handle, const char* path, int rdOnly);
+NGT_API int NgtEmptyIndex(NgtHandle handle);
+NGT_API int NgtGetDimension(NgtHandle handle);
 NGT_API void NgtInsert(
     NgtHandle handle, 
-    float* data,
+    const char* json, size_t len,
     int objectCount, 
     int numThreads
 );
 NGT_API NGTStr NgtSearch(
     NgtHandle handle, 
-    float* query, 
+    const char* json, size_t len, 
     int row,
     float epsilon,
     int edgeSize

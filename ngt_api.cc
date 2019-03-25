@@ -1,3 +1,4 @@
+#include <iostream>
 #include "ngt_api.h"
 
 /**
@@ -100,12 +101,40 @@ void NgtCreateDB(
  * @param  const char* path
  * @return void
  */
-NGT_API void NgtOpen(NgtHandle handle, const char* path, int rdOnly)
+void NgtOpen(NgtHandle handle, const char* path, int rdOnly)
 {
     croco::Index *index = static_cast<croco::Index*>(handle);
 
     bool readOnly = (rdOnly == 1);
     index->open(path, readOnly);
+}
+
+/**
+ * Is empty index
+ *
+ * @access public
+ * @return int
+ */
+int NgtEmptyIndex(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    if (!index->emptyIndex()) {
+        return NGT_FALSE;
+    }
+    return NGT_TRUE;
+}
+
+/**
+ * get dimension
+ *
+ * @access public
+ * @return int
+ */
+int NgtGetDimension(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+    return index->getDimension();
 }
 
 /**
@@ -116,19 +145,17 @@ NGT_API void NgtOpen(NgtHandle handle, const char* path, int rdOnly)
  * @param  const char* path
  * @return void
  */
-void NgtInsert(NgtHandle handle, float* data, int objectCount, int numThreads)
+void NgtInsert(NgtHandle handle, const char* json, size_t len, int objectCount, int numThreads)
 {
     croco::Index *index = static_cast<croco::Index*>(handle);
+    std::string strjson(json, len);
+    nlohmann::json parsed = nlohmann::json::parse(strjson);
+    std::vector<float> data;
 
-    int dim = index->getDimension();
-    std::vector<float> vdata;
-
-    for (int cnt=0; cnt < objectCount; cnt++) {
-        for (int idx=0; idx<dim; idx++) {
-            vdata.push_back(data[cnt + idx]);
-        }
+    for (auto &val : parsed) {
+        data.push_back(val);
     }
-    index->batchInsert(vdata, objectCount, numThreads);
+    index->batchInsert(data, objectCount, numThreads);
 }
 
 /**
@@ -139,24 +166,25 @@ void NgtInsert(NgtHandle handle, float* data, int objectCount, int numThreads)
  * @param  const char* path
  * @return int
  */
-NGTStr NgtSearch(NgtHandle handle, float* query, int row, float epsilon, int edgeSize)
+NGTStr NgtSearch(NgtHandle handle, const char* json, size_t len, int row, float epsilon, int edgeSize)
 {
     croco::Index *index = static_cast<croco::Index*>(handle);
+    std::string strjson(json, len);
+    nlohmann::json parsed = nlohmann::json::parse(strjson);
+    std::vector<float> query;
 
-    int dim = index->getDimension();
-    std::vector<float> vquery;
-    for (int idx=0; idx<dim; idx++) {
-        vquery.push_back(query[idx]);
+    for (auto &val : parsed) {
+        query.push_back(val);
     }
 
-    std::vector<std::pair<int, float>> result = index->search(vquery, row, epsilon, edgeSize);
+    std::vector<std::pair<int, float>> result = index->search(query, row, epsilon, edgeSize);
 
     nlohmann::json retj;
     int idx = 0;
     for (const auto &row : result) {
-        retj[idx]["Rank"]      = idx + 1;
-        retj[idx]["ID"]        = row.first;
-        retj[idx]["Distance"]  = row.second;
+        retj[idx]["Rank"]     = idx + 1;
+        retj[idx]["ID"]       = row.first;
+        retj[idx]["Distance"] = row.second;
         idx++;
     }
 
