@@ -19,7 +19,7 @@ ZEND_DECLARE_MODULE_GLOBALS(ngt)
 /* {{{ PHP_INI
 */
 PHP_INI_BEGIN()
-	STD_PHP_INI_ENTRY("ngt.model_dir",  NULL, PHP_INI_SYSTEM, OnUpdateString, model_dir, zend_ngt_globals, ngt_globals)
+	STD_PHP_INI_ENTRY("ngt.index_dir",  NULL, PHP_INI_SYSTEM, OnUpdateString, index_dir, zend_ngt_globals, ngt_globals)
 PHP_INI_END()
 /* }}} */
 
@@ -87,7 +87,7 @@ PHP_METHOD(ngt, __construct)
 }
 /* }}} */
 
-/* {{{ proto void ngt::open(String filename[], bool readOnly])
+/* {{{ proto void ngt::open(String filename[, bool readOnly])
  */
 PHP_METHOD(ngt, open)
 {
@@ -106,7 +106,7 @@ PHP_METHOD(ngt, open)
 }
 /* }}} */
 
-/* {{{ proto void ngt::insert(array data[[, int objectCount,] int numThreads])
+/* {{{ proto void ngt::insert(array data[, int objectCount, int numThreads])
  */
 PHP_METHOD(ngt, insert)
 {
@@ -141,7 +141,7 @@ PHP_METHOD(ngt, insert)
 }
 /* }}} */
 
-/* {{{ proto mixed ngt::search(array query[[[, int row], float epsilon], int edgeSize])
+/* {{{ proto mixed ngt::search(array query[, int row, float epsilon, int edgeSize])
  */
 PHP_METHOD(ngt, search)
 {
