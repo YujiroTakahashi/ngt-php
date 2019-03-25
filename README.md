@@ -54,6 +54,7 @@ NGT {
 * [NGT::__construct](#__construct)
 * [NGT::open](#open)
 * [NGT::insert](#insert)
+* [NGT::insertList](#insertlist)
 * [NGT::search](#search)
 * [NGT::remove](#remove)
 * [NGT::getObject](#getobject)
@@ -76,6 +77,7 @@ $index = new Croco\NGT\Index();
 open a database.
 
 ```php
+$index = new Croco\NGT\Index();
 
 $database = 'index';
 $index->open($database);
@@ -88,7 +90,27 @@ $index->open($database);
 insert a object.
 
 ```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
 $index->insert([0.033712, -0.058824, 0.08323, 0.072274, ... ...]);
+```
+
+-----
+
+### <a name="insertlist">void NGT::insertList()
+
+insert a object.
+
+```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
+$index->insertList([
+    [0.033712, -0.058824, 0.08323, 0.072274, ... ...],
+    [075103, 0.059359, 0.083976, 0.04961, ... ...],
+    [ -0.026512, 0.048607, -0.021153, 0.043541, ... ...]
+]);
 ```
 
 -----
@@ -98,6 +120,9 @@ $index->insert([0.033712, -0.058824, 0.08323, 0.072274, ... ...]);
 search the nearest neighbors.
 
 ```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
 $result = $index->search([0.074936, 0.05886, 0.083432, 0.049463, ... ...]);
 print_r($result);
 ```
@@ -125,6 +150,9 @@ print_r($result);
 ### <a name="remove">void NGT::remove()
 
 ```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
 $index->remove(4);
 ```
 
@@ -133,6 +161,9 @@ $index->remove(4);
 ### <a name="getobject">int NGT::getObject()
 
 ```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
 echo $index->getObject(3);
 ```
 
@@ -148,4 +179,8 @@ Croco\NGT\Index::CreateDB(
     'index',
     300
 );
+
+
+$index = new Croco\NGT\Index();
+$index->open('index');
 ```
