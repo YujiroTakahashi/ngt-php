@@ -42,6 +42,7 @@ NGT {
     public __construct ( void )
     public void open ( string filename[, int readOnly ...] )
     public void insert ( array data[, int objectCount=1, int numThreads=8] )
+    public void insertList ( array data[][, int numThreads=8] )
     public array search ( array query[, int row=10, float epsilon = 0.1, int edgeSize = -1] )
     public void remove ( int id )
     public array getObject ( int id )
@@ -58,7 +59,7 @@ NGT {
 * [NGT::search](#search)
 * [NGT::remove](#remove)
 * [NGT::getObject](#getobject)
-* [NGT::createDB](#createdb)
+* [NGT::CreateDB](#createdb)
 
 -----
 
@@ -172,12 +173,16 @@ echo $index->getObject(3);
 ```
 -----
 
-### <a name="createdb">int NGT::createDB()
+### <a name="createdb">int NGT::CreateDB()
 
 ```php
 Croco\NGT\Index::CreateDB(
-    'index',
-    300
+    'index',    // database path
+    300,        // dimension
+    10,         // edge size for creation
+    40,         // edge size for search
+    'L2',       // distance type
+    'Float'     // object type
 );
 
 
