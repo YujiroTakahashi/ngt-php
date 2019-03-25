@@ -46,7 +46,7 @@ NGT {
     public array search ( array query[, int row=10, float epsilon = 0.1, int edgeSize = -1] )
     public void remove ( int id )
     public array getObject ( int id )
-    public static createDB ( string filename, int dimension[, ...])
+    public static CreateDB ( string filename, int dimension[, ...])
 }
 ```
 
