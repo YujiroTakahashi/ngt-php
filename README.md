@@ -159,7 +159,7 @@ $index->remove(4);
 
 -----
 
-### <a name="getobject">int NGT::getObject()
+### <a name="getobject">array NGT::getObject()
 
 ```php
 $index = new Croco\NGT\Index();
@@ -173,7 +173,7 @@ echo $index->getObject(3);
 ```
 -----
 
-### <a name="createdb">int NGT::CreateDB()
+### <a name="createdb">void NGT::CreateDB()
 
 ```php
 Croco\NGT\Index::CreateDB(
