@@ -78,9 +78,13 @@ $index = new Croco\NGT\Index();
 -----
 
 ### <a name="open">void NGT::open(string filename)
-### <a name="close">void NGT::close()
 
 open a database.
+
+
+### <a name="close">void NGT::close()
+
+close a database.
 
 ```php
 $index = new Croco\NGT\Index();
@@ -93,9 +97,13 @@ $index->close();
 -----
 
 ### <a name="insert">void NGT::insert(array data)
-### <a name="save">void NGT::save()
 
 insert a object.
+
+
+### <a name="save">void NGT::save()
+
+save a database.
 
 ```php
 $index = new Croco\NGT\Index();
