@@ -56,6 +56,8 @@ NGT {
 
 * [NGT::__construct](#__construct)
 * [NGT::open](#open)
+* [NGT::save](#save)
+* [NGT::close](#close)
 * [NGT::insert](#insert)
 * [NGT::insertList](#insertlist)
 * [NGT::search](#search)
@@ -76,6 +78,7 @@ $index = new Croco\NGT\Index();
 -----
 
 ### <a name="open">void NGT::open(string filename)
+### <a name="open">void NGT::close()
 
 open a database.
 
@@ -84,11 +87,13 @@ $index = new Croco\NGT\Index();
 
 $database = 'index';
 $index->open($database);
+$index->close();
 ```
 
 -----
 
-### <a name="insert">void NGT::insert()
+### <a name="insert">void NGT::insert(array data)
+### <a name="insert">void NGT::save()
 
 insert a object.
 
