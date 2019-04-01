@@ -42,10 +42,11 @@ NGT {
     public __construct ( void )
     public void open ( string filename[, int readOnly ...] )
     public void insert ( array data[, int objectCount=1, int numThreads=8] )
+    public void insertList ( array data[][, int numThreads=8] )
     public array search ( array query[, int row=10, float epsilon = 0.1, int edgeSize = -1] )
     public void remove ( int id )
     public array getObject ( int id )
-    public static createDB ( string filename, int dimension[, ...])
+    public static CreateDB ( string filename, int dimension[, ...])
 }
 ```
 
@@ -54,10 +55,11 @@ NGT {
 * [NGT::__construct](#__construct)
 * [NGT::open](#open)
 * [NGT::insert](#insert)
+* [NGT::insertList](#insertlist)
 * [NGT::search](#search)
 * [NGT::remove](#remove)
 * [NGT::getObject](#getobject)
-* [NGT::createDB](#createdb)
+* [NGT::CreateDB](#createdb)
 
 -----
 
@@ -76,6 +78,7 @@ $index = new Croco\NGT\Index();
 open a database.
 
 ```php
+$index = new Croco\NGT\Index();
 
 $database = 'index';
 $index->open($database);
@@ -88,7 +91,27 @@ $index->open($database);
 insert a object.
 
 ```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
 $index->insert([0.033712, -0.058824, 0.08323, 0.072274, ... ...]);
+```
+
+-----
+
+### <a name="insertlist">void NGT::insertList()
+
+insert a object.
+
+```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
+$index->insertList([
+    [0.033712, -0.058824, 0.08323, 0.072274, ... ...],
+    [075103, 0.059359, 0.083976, 0.04961, ... ...],
+    [ -0.026512, 0.048607, -0.021153, 0.043541, ... ...]
+]);
 ```
 
 -----
@@ -98,6 +121,9 @@ $index->insert([0.033712, -0.058824, 0.08323, 0.072274, ... ...]);
 search the nearest neighbors.
 
 ```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
 $result = $index->search([0.074936, 0.05886, 0.083432, 0.049463, ... ...]);
 print_r($result);
 ```
@@ -125,14 +151,20 @@ print_r($result);
 ### <a name="remove">void NGT::remove()
 
 ```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
 $index->remove(4);
 ```
 
 -----
 
-### <a name="getobject">int NGT::getObject()
+### <a name="getobject">array NGT::getObject()
 
 ```php
+$index = new Croco\NGT\Index();
+$index->open('index');
+
 echo $index->getObject(3);
 ```
 
@@ -141,11 +173,31 @@ echo $index->getObject(3);
 ```
 -----
 
-### <a name="createdb">int NGT::createDB()
+### <a name="createdb">void NGT::CreateDB()
 
 ```php
 Croco\NGT\Index::CreateDB(
-    'index',
-    300
+    'index',    // database path
+    300,        // dimension
+    10,         // edge size for creation
+    40,         // edge size for search
+    'L2',       // distance type
+    'Float'     // object type [Integer, Float]
 );
+
+
+$index = new Croco\NGT\Index();
+$index->open('index');
 ```
+
+#### DistanceType
+| 距離関数          | 内容 |
+|:-----------------|:----------|
+| None             | なし |
+| L1               | L1距離 |
+| L2               | L2距離（デフォルト） |
+| Hamming          | ハミング距離 |
+| Angle            | 角度 |
+| Cosine           | コサイン類似度 |
+| NormalizedAngle  | 角度：正規化して保存 |
+| NormalizedCosine | コサイン類似度：正規化して保存 |
