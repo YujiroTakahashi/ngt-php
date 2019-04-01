@@ -50,6 +50,8 @@ NGT_API void NgtCreateDB(
     const char* objectType
 );
 NGT_API void NgtOpen(NgtHandle handle, const char* path, int rdOnly);
+NGT_API void NgtSave(NgtHandle handle);
+NGT_API void NgtClose(NgtHandle handle);
 NGT_API int NgtEmptyIndex(NgtHandle handle);
 NGT_API int NgtGetDimension(NgtHandle handle);
 NGT_API void NgtInsert(

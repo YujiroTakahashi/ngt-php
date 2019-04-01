@@ -69,8 +69,12 @@ void NgtStrFree(NGTStr str)
  * Create database
  *
  * @access public
- * @param  NgtHandle handle
  * @param  const char* path
+ * @param  int dimension
+ * @param  int edgeSizeForCreation
+ * @param  int edgeSizeForSearch
+ * @param  const char* distanceType
+ * @param  const char* objectType
  * @return void
  */
 void NgtCreateDB(
@@ -99,6 +103,7 @@ void NgtCreateDB(
  * @access public
  * @param  NgtHandle handle
  * @param  const char* path
+ * @param  int rdOnly
  * @return void
  */
 void NgtOpen(NgtHandle handle, const char* path, int rdOnly)
@@ -107,6 +112,34 @@ void NgtOpen(NgtHandle handle, const char* path, int rdOnly)
 
     bool readOnly = (rdOnly == 1);
     index->open(path, readOnly);
+}
+
+/**
+ * Save database
+ *
+ * @access public
+ * @param  NgtHandle handle
+ * @return void
+ */
+void NgtSave(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    index->save();
+}
+
+/**
+ * Close database
+ *
+ * @access public
+ * @param  NgtHandle handle
+ * @return void
+ */
+void NgtClose(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    index->close();
 }
 
 /**

@@ -106,6 +106,43 @@ PHP_METHOD(ngt, open)
 }
 /* }}} */
 
+
+/* {{{ proto void ngt::save()
+ */
+PHP_METHOD(ngt, save)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+
+	ngt_obj = Z_NGT_P(object);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	NgtSave(ngt_obj->ngt);
+}
+/* }}} */
+
+
+/* {{{ proto void ngt::close()
+ */
+PHP_METHOD(ngt, close)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+
+	ngt_obj = Z_NGT_P(object);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	NgtClose(ngt_obj->ngt);
+}
+/* }}} */
+
+
 /* {{{ proto void ngt::insert(array data[, int objectCount, int numThreads])
  */
 PHP_METHOD(ngt, insert)
@@ -324,6 +361,8 @@ static zend_function_entry php_ngt_class_methods[] = {
 	PHP_ME(ngt, CreateDB,     arginfo_ngt_six,      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME(ngt, __construct,  arginfo_ngt_void,	    ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME(ngt, open,         arginfo_ngt_open,	    ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, save,         arginfo_ngt_void,	    ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, close,        arginfo_ngt_void,	    ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, insert,       arginfo_ngt_insert,   ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, insertList,   arginfo_ngt_insertL,  ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, search,       arginfo_ngt_search,   ZEND_ACC_PUBLIC)
