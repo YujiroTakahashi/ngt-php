@@ -41,6 +41,8 @@ extension=ngt.so
 NGT {
     public __construct ( void )
     public void open ( string filename[, int readOnly ...] )
+    public void save ( void )
+    public void close ( void )
     public void insert ( array data[, int objectCount=1, int numThreads=8] )
     public void insertList ( array data[][, int numThreads=8] )
     public array search ( array query[, int row=10, float epsilon = 0.1, int edgeSize = -1] )
@@ -95,6 +97,9 @@ $index = new Croco\NGT\Index();
 $index->open('index');
 
 $index->insert([0.033712, -0.058824, 0.08323, 0.072274, ... ...]);
+
+$index->save();
+$index->close();
 ```
 
 -----
@@ -112,6 +117,9 @@ $index->insertList([
     [075103, 0.059359, 0.083976, 0.04961, ... ...],
     [ -0.026512, 0.048607, -0.021153, 0.043541, ... ...]
 ]);
+
+$index->save();
+$index->close();
 ```
 
 -----
@@ -125,6 +133,9 @@ $index = new Croco\NGT\Index();
 $index->open('index');
 
 $result = $index->search([0.074936, 0.05886, 0.083432, 0.049463, ... ...]);
+
+$index->close();
+
 print_r($result);
 ```
 
@@ -155,6 +166,9 @@ $index = new Croco\NGT\Index();
 $index->open('index');
 
 $index->remove(4);
+
+$index->save();
+$index->close();
 ```
 
 -----
@@ -166,6 +180,8 @@ $index = new Croco\NGT\Index();
 $index->open('index');
 
 echo $index->getObject(3);
+
+$index->close();
 ```
 
 ```
@@ -188,6 +204,7 @@ Croco\NGT\Index::CreateDB(
 
 $index = new Croco\NGT\Index();
 $index->open('index');
+$index->close();
 ```
 
 #### DistanceType
