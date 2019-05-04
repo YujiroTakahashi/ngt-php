@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+package croco;
+
+message Object {
+    repeated uint32 members = 1;
+}
+
+message ObjectSpace {
+    repeated Object objects = 1;
+}
+
+
+message Distance {
+    uint32 id = 1;
+    float distance = 2;
+}
+
+message DistanceSpace {
+    message Distances {    
+        repeated Distance members = 1;
+    }
+    repeated Distances distances = 1;
+}    
+
+message LeafNodeSpace {
+    message LeafNode {
+        uint32 id = 1;
+        uint32 parent = 2;
+        repeated Distance distances = 4;
+        repeated uint32 pivot = 3;
+    }
+    repeated LeafNode nodes = 1;
+}
+
+message InternalNodeSpace {
+    message InternalNode {
+        uint32 id = 1;
+        uint32 parent = 2;
+        repeated uint32 pivot = 3;
+        repeated uint32 children = 4;
+        repeated float borders = 5;
+    }
+    repeated InternalNode nodes = 1;
+}

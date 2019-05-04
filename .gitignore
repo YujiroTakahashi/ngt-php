@@ -1,4 +1,5 @@
 .deps
+.vscode
 *.lo
 *.la
 .libs

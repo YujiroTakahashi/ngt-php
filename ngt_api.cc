@@ -171,6 +171,228 @@ int NgtGetDimension(NgtHandle handle)
 }
 
 /**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtExportIndex(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+    index->exportIndex();
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+NGTStr NgtGetObjectString(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string output;
+    index->getObjectString(&output);
+
+    NGTStr retval = new struct _NGTStr;
+    retval->len = output.length();
+    retval->buff = new char[retval->len + 1];
+    strcpy(retval->buff, output.c_str());
+
+    return retval;
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+NGTStr NgtGetDistanceString(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string output;
+    index->getDistanceString(&output);
+
+    NGTStr retval = new struct _NGTStr;
+    retval->len = output.length();
+    retval->buff = new char[retval->len + 1];
+    strcpy(retval->buff, output.c_str());
+
+    return retval;
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+NGTStr NgtGetLeafNodeString(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string output;
+    index->getLeafNodeString(&output);
+
+    NGTStr retval = new struct _NGTStr;
+    retval->len = output.length();
+    retval->buff = new char[retval->len + 1];
+    strcpy(retval->buff, output.c_str());
+
+    return retval;
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+NGTStr NgtGetInternalNodeString(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string output;
+    index->getInternalNodeString(&output);
+
+    NGTStr retval = new struct _NGTStr;
+    retval->len = output.length();
+    retval->buff = new char[retval->len + 1];
+    strcpy(retval->buff, output.c_str());
+
+    return retval;
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtSetObjectString(NgtHandle handle, const char& data)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string strdata(&data);
+    index->setObjectString(strdata);
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtSetDistanceString(NgtHandle handle, const char& data)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string strdata(&data);
+    index->setDistanceString(strdata);
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtSetLeafNodeString(NgtHandle handle, const char& data)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string strdata(&data);
+    index->setLeafNodeString(strdata);
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtSetInternalNodeString(NgtHandle handle, const char& data)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string strdata(&data);
+    index->setInternalNodeString(strdata);
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtAddObjectString(NgtHandle handle, const char& data)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string strdata(&data);
+    index->addObjectString(strdata);
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtAddDistanceString(NgtHandle handle, const char& data)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string strdata(&data);
+    index->addDistanceString(strdata);
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtAddLeafNodeString(NgtHandle handle, const char& data)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string strdata(&data);
+    index->addLeafNodeString(strdata);
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtAddInternalNodeString(NgtHandle handle, const char& data)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    std::string strdata(&data);
+    index->addInternalNodeString(strdata);
+}
+
+/**
+ * 
+ *
+ * @access public
+ * @return int
+ */
+void NgtImportIndex(NgtHandle handle)
+{
+    croco::Index *index = static_cast<croco::Index*>(handle);
+
+    index->importIndex();
+}
+
+
+/**
  * Insert object
  *
  * @access public
