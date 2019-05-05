@@ -142,6 +142,177 @@ PHP_METHOD(ngt, close)
 }
 /* }}} */
 
+/* {{{ proto string ngt::getObjectString()
+ */
+PHP_METHOD(ngt, getObjectString)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	NGTStr output;
+
+	ngt_obj = Z_NGT_P(object);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	output = NgtGetObjectString(ngt_obj->ngt);
+	output = NgtGetDistanceString(ngt_obj->ngt);
+	output = NgtGetLeafNodeString(ngt_obj->ngt);
+	output = NgtGetInternalNodeString(ngt_obj->ngt);
+
+	ZVAL_STRING(return_value, output->buff);
+	NgtStrFree(output);
+}
+/* }}} */
+
+/* {{{ proto string ngt::getDistanceString()
+ */
+PHP_METHOD(ngt, getDistanceString)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	NGTStr output;
+
+	ngt_obj = Z_NGT_P(object);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	output = NgtGetDistanceString(ngt_obj->ngt);
+
+	ZVAL_STRING(return_value, output->buff);
+	NgtStrFree(output);
+}
+/* }}} */
+
+
+/* {{{ proto string ngt::getLeafNodeString()
+ */
+PHP_METHOD(ngt, getLeafNodeString)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	NGTStr output;
+
+	ngt_obj = Z_NGT_P(object);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	output = NgtGetLeafNodeString(ngt_obj->ngt);
+
+	ZVAL_STRING(return_value, output->buff);
+	NgtStrFree(output);
+}
+/* }}} */
+
+
+/* {{{ proto string ngt::getInternalNodeString()
+ */
+PHP_METHOD(ngt, getInternalNodeString)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	NGTStr output;
+
+	ngt_obj = Z_NGT_P(object);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	output = NgtGetInternalNodeString(ngt_obj->ngt);
+
+	ZVAL_STRING(return_value, output->buff);
+	NgtStrFree(output);
+}
+/* }}} */
+
+/* {{{ proto void ngt::addStringDatas(string object, string distance, string leaf, string internal)
+ */
+PHP_METHOD(ngt, addStringDatas)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	char *objectstr;
+	size_t objectstr_len;
+	char *distance;
+	size_t distance_len;
+	char *leaf;
+	size_t leaf_len;
+	char *internal;
+	size_t internal_len;
+
+	ngt_obj = Z_NGT_P(object);
+	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "ssss", &objectstr, &objectstr_len, &distance, &distance_len, &leaf, &leaf_len, &internal, &internal_len)) {
+		return;
+	}
+
+	NgtAddObjectString(ngt_obj->ngt, (const char*)objectstr);
+	NgtAddDistanceString(ngt_obj->ngt, (const char*)distance);
+	NgtAddLeafNodeString(ngt_obj->ngt, (const char*)leaf);
+	NgtAddInternalNodeString(ngt_obj->ngt, (const char*)internal);
+}
+/* }}} */
+
+
+/* {{{ proto void ngt::setStringDatas(string object, string distance, string leaf, string internal)
+ */
+PHP_METHOD(ngt, setStringDatas)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	char *objectstr;
+	size_t objectstr_len;
+	char *distance;
+	size_t distance_len;
+	char *leaf;
+	size_t leaf_len;
+	char *internal;
+	size_t internal_len;
+
+	ngt_obj = Z_NGT_P(object);
+	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "ssss", &objectstr, &objectstr_len, &distance, &distance_len, &leaf, &leaf_len, &internal, &internal_len)) {
+		return;
+	}
+
+	NgtSetObjectString(ngt_obj->ngt, (const char*)objectstr);
+	NgtSetDistanceString(ngt_obj->ngt, (const char*)distance);
+	NgtSetLeafNodeString(ngt_obj->ngt, (const char*)leaf);
+	NgtSetInternalNodeString(ngt_obj->ngt, (const char*)internal);
+}
+/* }}} */
+
+/* {{{ proto string ngt::importIndex()
+ */
+PHP_METHOD(ngt, importIndex)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+
+	ngt_obj = Z_NGT_P(object);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	NgtImportIndex(ngt_obj->ngt);
+}
+/* }}} */
+
+/* {{{ proto string ngt::exportIndex()
+ */
+PHP_METHOD(ngt, exportIndex)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+
+	ngt_obj = Z_NGT_P(object);
+
+	if (zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+	NgtExportIndex(ngt_obj->ngt);
+}
+/* }}} */
 
 /* {{{ proto void ngt::insert(array data[, int objectCount, int numThreads])
  */
@@ -344,6 +515,13 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_search, 0, 0, 1)
 	ZEND_ARG_INFO(0, edgeSize)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_data, 0, 0, 4)
+	ZEND_ARG_INFO(0, object)
+	ZEND_ARG_INFO(0, distance)
+	ZEND_ARG_INFO(0, leafNode)
+	ZEND_ARG_INFO(0, internalNode)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_six, 0, 0, 2)
 	ZEND_ARG_INFO(0, path)
 	ZEND_ARG_INFO(0, dimension)
@@ -358,16 +536,24 @@ ZEND_END_ARG_INFO()
 
 /* {{{ php_sngt_class_methods */
 static zend_function_entry php_ngt_class_methods[] = {
-	PHP_ME(ngt, CreateDB,     arginfo_ngt_six,      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
-	PHP_ME(ngt, __construct,  arginfo_ngt_void,	    ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME(ngt, open,         arginfo_ngt_open,	    ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, save,         arginfo_ngt_void,	    ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, close,        arginfo_ngt_void,	    ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, insert,       arginfo_ngt_insert,   ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, insertList,   arginfo_ngt_insertL,  ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, search,       arginfo_ngt_search,   ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, remove,       arginfo_ngt_id,       ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getObject,    arginfo_ngt_id,       ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, CreateDB,              arginfo_ngt_six,      ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME(ngt, __construct,           arginfo_ngt_void,     ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME(ngt, open,                  arginfo_ngt_open,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, save,                  arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, close,                 arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getObjectString,       arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getDistanceString,     arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getLeafNodeString,     arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getInternalNodeString, arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, addStringDatas,        arginfo_ngt_data,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, setStringDatas,        arginfo_ngt_data,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, importIndex,           arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, exportIndex,           arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, insert,                arginfo_ngt_insert,   ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, insertList,            arginfo_ngt_insertL,  ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, search,                arginfo_ngt_search,   ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, remove,                arginfo_ngt_id,       ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getObject,             arginfo_ngt_id,       ZEND_ACC_PUBLIC)
 
 	PHP_FE_END
 };
