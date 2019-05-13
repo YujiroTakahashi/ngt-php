@@ -1,7 +1,7 @@
 #ifndef PHP_NGT_H
 #define PHP_NGT_H
 
-#include "ngt_api.h"
+#include <croco/ngt/c_api.h>
 
 #define PHP_NGT_VERSION	"0.1.0"
 

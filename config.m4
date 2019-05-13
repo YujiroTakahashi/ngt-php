@@ -39,8 +39,9 @@ if test "$PHP_NGT" != "no"; then
 
   PHP_ADD_LIBRARY(stdc++, 1, NGT_SHARED_LIBADD)
   PHP_ADD_LIBRARY(ngt, 1, NGT_SHARED_LIBADD)
+  PHP_ADD_LIBRARY(croco_ngt, 1, NGT_SHARED_LIBADD)
   CFLAGS="-O3 -funroll-loops"
   CXXFLAGS="-pthread -std=c++14 -O3 -funroll-loops"
 
-  PHP_NEW_EXTENSION(ngt, ngt.cc ngt_api.cc php_ngt.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+  PHP_NEW_EXTENSION(ngt, php_ngt.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 fi
