@@ -6,7 +6,7 @@ NGT-php is a PHP bindings for NGT.
 
 ## Requirements
 
-libngt
+[libngt](https://github.com/yahoojapan/NGT) 
 
 ```
 $ curl -fSL "https://github.com/yahoojapan/NGT/archive/v1.7.3.tar.gz" -o "ngt-1.7.3.tgz"
