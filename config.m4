@@ -28,6 +28,26 @@ if test "$PHP_NGT" != "no"; then
     AC_MSG_ERROR([Please reinstall the ngt distribution, "$PHP_NGT"])
   fi
 
+
+  SEARCH_PATH="/usr/local /usr"
+  SEARCH_FOR="/include/croco/ngt/c_api.h"
+  if test -r $PHP_CROCO_NGT/$SEARCH_FOR; then # path given as parameter
+    CROCO_NGT_DIR=$PHP_CROCO_NGT
+  else # search default path list
+    AC_MSG_CHECKING([for ngt files in default path])
+    for i in $SEARCH_PATH ; do
+      if test -r $i/$SEARCH_FOR; then
+        CROCO_NGT_DIR=$i
+        AC_MSG_RESULT(found in $i)
+      fi
+    done
+  fi
+
+  if test -z "$CROCO_NGT_DIR"; then
+    AC_MSG_RESULT([not found])
+    AC_MSG_ERROR([Please reinstall the ngt distribution, "$PHP_CROCO_NGT"])
+  fi
+
   # --with-ngt -> add include path
   PHP_ADD_INCLUDE($NGT_DIR/include/ngt)
 

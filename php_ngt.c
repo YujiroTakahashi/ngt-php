@@ -90,9 +90,9 @@ PHP_METHOD(ngt, create)
 /* }}} */
 
 
-/* {{{ proto string ngt::getObjectPbString()
+/* {{{ proto string ngt::getObjectString()
  */
-PHP_METHOD(ngt, getObjectPbString)
+PHP_METHOD(ngt, getObjectString)
 {
 	php_ngt_object *ngt_obj;
 	zval *object = getThis();
@@ -110,9 +110,9 @@ PHP_METHOD(ngt, getObjectPbString)
 }
 /* }}} */
 
-/* {{{ proto string ngt::getDistancePbString()
+/* {{{ proto string ngt::getDistanceString()
  */
-PHP_METHOD(ngt, getDistancePbString)
+PHP_METHOD(ngt, getDistanceString)
 {
 	php_ngt_object *ngt_obj;
 	zval *object = getThis();
@@ -131,9 +131,9 @@ PHP_METHOD(ngt, getDistancePbString)
 /* }}} */
 
 
-/* {{{ proto string ngt::getLeafNodePbString()
+/* {{{ proto string ngt::getLeafNodeString()
  */
-PHP_METHOD(ngt, getLeafNodePbString)
+PHP_METHOD(ngt, getLeafNodeString)
 {
 	php_ngt_object *ngt_obj;
 	zval *object = getThis();
@@ -152,9 +152,9 @@ PHP_METHOD(ngt, getLeafNodePbString)
 /* }}} */
 
 
-/* {{{ proto string ngt::getInternalNodePbString()
+/* {{{ proto string ngt::getInternalNodeString()
  */
-PHP_METHOD(ngt, getInternalNodePbString)
+PHP_METHOD(ngt, getInternalNodeString)
 {
 	php_ngt_object *ngt_obj;
 	zval *object = getThis();
@@ -172,163 +172,98 @@ PHP_METHOD(ngt, getInternalNodePbString)
 }
 /* }}} */
 
-/* {{{ proto string ngt::getObjects()
+/* {{{ proto void ngt::setObjectString(string object)
  */
-PHP_METHOD(ngt, getObjects)
-{
-	php_ngt_object *ngt_obj;
-	zval *object = getThis();
-	NGTStr json;
-
-	ngt_obj = Z_NGT_P(object);
-
-	if (zend_parse_parameters_none() == FAILURE) {
-		return;
-	}
-	json = NgtGetObjectJson(ngt_obj->ngt);
-
-	array_init(return_value);
-	php_json_decode(return_value, json->buff, json->len, 1, PHP_JSON_PARSER_DEFAULT_DEPTH);
-	NgtStrFree(json);
-}
-/* }}} */
-
-/* {{{ proto string ngt::getDistances()
- */
-PHP_METHOD(ngt, getDistances)
-{
-	php_ngt_object *ngt_obj;
-	zval *object = getThis();
-	NGTStr json;
-
-	ngt_obj = Z_NGT_P(object);
-
-	if (zend_parse_parameters_none() == FAILURE) {
-		return;
-	}
-	json = NgtGetDistanceJson(ngt_obj->ngt);
-
-	array_init(return_value);
-	php_json_decode(return_value, json->buff, json->len, 1, PHP_JSON_PARSER_DEFAULT_DEPTH);
-	NgtStrFree(json);
-}
-/* }}} */
-
-
-/* {{{ proto string ngt::getLeafNodes()
- */
-PHP_METHOD(ngt, getLeafNodes)
-{
-	php_ngt_object *ngt_obj;
-	zval *object = getThis();
-	NGTStr json;
-
-	ngt_obj = Z_NGT_P(object);
-
-	if (zend_parse_parameters_none() == FAILURE) {
-		return;
-	}
-	json = NgtGetLeafNodeJson(ngt_obj->ngt);
-
-	array_init(return_value);
-	php_json_decode(return_value, json->buff, json->len, 1, PHP_JSON_PARSER_DEFAULT_DEPTH);
-	NgtStrFree(json);
-}
-/* }}} */
-
-
-/* {{{ proto string ngt::getInternalNodes()
- */
-PHP_METHOD(ngt, getInternalNodes)
-{
-	php_ngt_object *ngt_obj;
-	zval *object = getThis();
-	NGTStr json;
-
-	ngt_obj = Z_NGT_P(object);
-
-	if (zend_parse_parameters_none() == FAILURE) {
-		return;
-	}
-	json = NgtGetInternalNodeJson(ngt_obj->ngt);
-
-	array_init(return_value);
-	php_json_decode(return_value, json->buff, json->len, 1, PHP_JSON_PARSER_DEFAULT_DEPTH);
-	NgtStrFree(json);
-}
-/* }}} */
-
-
-/* {{{ proto void ngt::setJsonDatas(string object, string distance, string leaf, string internal)
- */
-PHP_METHOD(ngt, setJsonDatas)
+PHP_METHOD(ngt, setObjectString)
 {
 	php_ngt_object *ngt_obj;
 	zval *object = getThis();
 	char *objectstr;
-	size_t objectstr_len = 0;
-	char *distance;
-	size_t distance_len = 0;
-	char *leaf;
-	size_t leaf_len = 0;
-	char *internal;
-	size_t internal_len = 0;
+	size_t objectstr_len = 0, size = 0;
 
 	ngt_obj = Z_NGT_P(object);
-	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "ssss", &objectstr, &objectstr_len, &distance, &distance_len, &leaf, &leaf_len, &internal, &internal_len)) {
+	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "s", &objectstr, &objectstr_len)) {
 		return;
 	}
 
-	if (0 != objectstr_len) {
-		NgtSetObjectJson(ngt_obj->ngt, (const char*)objectstr, objectstr_len);
+	if (0 == objectstr_len) {
+		return;
 	}
-	if (0 != distance_len) {
-		NgtSetDistanceJson(ngt_obj->ngt, (const char*)distance, distance_len);
-	}
-	if (0 != leaf_len) {
-		NgtSetLeafNodeJson(ngt_obj->ngt, (const char*)leaf, leaf_len);
-	}
-	if (0 != internal_len) {
-		NgtSetInternalNodeJson(ngt_obj->ngt, (const char*)internal, internal_len);
-	}
+	size = ('\0' == objectstr[objectstr_len]) ? objectstr_len - 1 : objectstr_len;
+
+	NgtSetObjectString(ngt_obj->ngt, (const char*)objectstr, size);
 }
 /* }}} */
 
-/* {{{ proto void ngt::setPbDatas(string object, string distance, string leaf, string internal)
+/* {{{ proto void ngt::setDistanceString(string distance)
  */
-PHP_METHOD(ngt, setPbDatas)
+PHP_METHOD(ngt, setDistanceString)
 {
 	php_ngt_object *ngt_obj;
 	zval *object = getThis();
-	char *objectstr;
-	size_t objectstr_len = 0;
 	char *distance;
-	size_t distance_len = 0;
-	char *leaf;
-	size_t leaf_len = 0;
-	char *internal;
-	size_t internal_len = 0;
+	size_t distance_len = 0, size = 0;
 
 	ngt_obj = Z_NGT_P(object);
-	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "ssss", &objectstr, &objectstr_len, &distance, &distance_len, &leaf, &leaf_len, &internal, &internal_len)) {
+	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "s", &distance, &distance_len)) {
 		return;
 	}
 
-	if (0 != objectstr_len) {
-		NgtSetObjectData(ngt_obj->ngt, (const uint8_t*)objectstr, objectstr_len -1);
+	if (0 == distance_len) {
+		return;
 	}
-	if (0 != distance_len) {
-		NgtSetDistanceData(ngt_obj->ngt, (const uint8_t*)distance, distance_len -1);
-	}
-	if (0 != leaf_len) {
-		NgtSetLeafNodeData(ngt_obj->ngt, (const uint8_t*)leaf, leaf_len -1);
-	}
-	if (0 != internal_len) {
-		NgtSetInternalNodeData(ngt_obj->ngt, (const uint8_t*)internal, internal_len -1);
-	}
+	size = ('\0' == distance[distance_len]) ? distance_len - 1 : distance_len;
+
+	NgtSetDistanceString(ngt_obj->ngt, (const char*)distance, size);
 }
 /* }}} */
 
+/* {{{ proto void ngt::setLeafNodeString(string leaf)
+ */
+PHP_METHOD(ngt, setLeafNodeString)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	char *leaf;
+	size_t leaf_len = 0, size = 0;
+
+	ngt_obj = Z_NGT_P(object);
+	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "s", &leaf, &leaf_len)) {
+		return;
+	}
+
+	if (0 == leaf_len) {
+		return;
+	}
+	size = ('\0' == leaf[leaf_len]) ? leaf_len - 1 : leaf_len;
+
+	NgtSetLeafNodeString(ngt_obj->ngt, (const char*)leaf, size);
+}
+/* }}} */
+
+/* {{{ proto void ngt::setInternalNodeString(string internal)
+ */
+PHP_METHOD(ngt, setInternalNodeString)
+{
+	php_ngt_object *ngt_obj;
+	zval *object = getThis();
+	char *internal;
+	size_t internal_len = 0, size = 0;
+
+	ngt_obj = Z_NGT_P(object);
+	if (FAILURE == zend_parse_parameters_throw(ZEND_NUM_ARGS(), "s", &internal, &internal_len)) {
+		RETURN_FALSE;
+	}
+
+	if (0 == internal_len) {
+		RETURN_FALSE;
+	}
+	size = ('\0' == internal[internal_len]) ? internal_len - 1 : internal_len;
+
+	NgtSetInternalNodeString(ngt_obj->ngt, (const char*)internal, size);
+	RETURN_TRUE;
+}
+/* }}} */
 
 /* {{{ proto string ngt::importIndex()
  */
@@ -540,6 +475,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_id, 0, 0, 1)
 	ZEND_ARG_INFO(0, id)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_data, 0, 0, 1)
+	ZEND_ARG_INFO(0, data)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_insert, 0, 0, 1)
 	ZEND_ARG_INFO(0, data)
 	ZEND_ARG_INFO(0, objectCount)
@@ -558,13 +497,6 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_search, 0, 0, 1)
 	ZEND_ARG_INFO(0, edgeSize)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_data, 0, 0, 4)
-	ZEND_ARG_INFO(0, object)
-	ZEND_ARG_INFO(0, distance)
-	ZEND_ARG_INFO(0, leafNode)
-	ZEND_ARG_INFO(0, internalNode)
-ZEND_END_ARG_INFO()
-
 ZEND_BEGIN_ARG_INFO_EX(arginfo_ngt_five, 0, 0, 2)
 	ZEND_ARG_INFO(0, dimension)
 	ZEND_ARG_INFO(0, edgeSizeForCreation)
@@ -580,16 +512,14 @@ ZEND_END_ARG_INFO()
 static zend_function_entry php_ngt_class_methods[] = {
 	PHP_ME(ngt, __construct,             arginfo_ngt_void,     ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME(ngt, create,                  arginfo_ngt_five,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getObjectPbString,       arginfo_ngt_void,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getDistancePbString,     arginfo_ngt_void,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getLeafNodePbString,     arginfo_ngt_void,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getInternalNodePbString, arginfo_ngt_void,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getObjects,              arginfo_ngt_void,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getDistances,            arginfo_ngt_void,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getLeafNodes,            arginfo_ngt_void,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, getInternalNodes,        arginfo_ngt_void,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, setJsonDatas,            arginfo_ngt_data,     ZEND_ACC_PUBLIC)
-	PHP_ME(ngt, setPbDatas,              arginfo_ngt_data,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getObjectString,         arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getDistanceString,       arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getLeafNodeString,       arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, getInternalNodeString,   arginfo_ngt_void,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, setObjectString,         arginfo_ngt_data,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, setDistanceString,       arginfo_ngt_data,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, setLeafNodeString,       arginfo_ngt_data,     ZEND_ACC_PUBLIC)
+	PHP_ME(ngt, setInternalNodeString,   arginfo_ngt_data,     ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, importIndex,             arginfo_ngt_void,     ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, exportIndex,             arginfo_ngt_void,     ZEND_ACC_PUBLIC)
 	PHP_ME(ngt, insert,                  arginfo_ngt_insert,   ZEND_ACC_PUBLIC)
