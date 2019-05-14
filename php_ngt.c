@@ -46,7 +46,7 @@ PHP_METHOD(ngt, __construct)
 }
 /* }}} */
 
-/* {{{ proto void ngt::create()
+/* {{{ proto void ngt::create(int dimension [, int edgeSizeForCreation, int edgeSizeForSearch, string distanceType, string defaultObjectType])
  */
 PHP_METHOD(ngt, create)
 {

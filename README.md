@@ -39,31 +39,46 @@ extension=ngt.so
 
 ```php
 NGT {
-    public __construct ( void )
-    public void open ( string filename[, int readOnly ...] )
-    public void save ( void )
-    public void close ( void )
-    public void insert ( array data[, int objectCount=1, int numThreads=8] )
-    public void insertList ( array data[][, int numThreads=8] )
-    public array search ( array query[, int row=10, float epsilon = 0.1, int edgeSize = -1] )
-    public void remove ( int id )
-    public array getObject ( int id )
-    public static CreateDB ( string filename, int dimension[, ...])
+	public __construct (void)
+	public void create (int dimension [, int edgeSizeForCreation, int edgeSizeForSearch, string distanceType, string objectType])
+	public string getObjectString ( void )
+	public string getDistanceString ( void )
+	public string getLeafNodeString ( void )
+	public string getInternalNodeString ( void )
+	public void setObjectString ( string data )
+	public void setDistanceString ( string data )
+	public void setLeafNodeString ( string data )
+	public void setInternalNodeString ( string data )
+	public void importIndex ( void )
+	public void exportIndex ( void )
+	public void insert ( array data[, int objectCount=1, int numThreads=8] )
+	public void insertList ( array data[][, int numThreads=8] )
+	public array search ( array query[, int row=10, float epsilon = 0.1, int edgeSize = -1] )
+	public void remove ( int id )
+	public array getObject ( int id )
 }
 ```
 
 ## Table of Contents
 
 * [NGT::__construct](#__construct)
-* [NGT::open](#open)
-* [NGT::save](#save)
-* [NGT::close](#close)
+* [NGT::create](#create)
 * [NGT::insert](#insert)
 * [NGT::insertList](#insertlist)
 * [NGT::search](#search)
 * [NGT::remove](#remove)
 * [NGT::getObject](#getobject)
-* [NGT::CreateDB](#createdb)
+* [NGT::exportIndex](#export)
+* [NGT::getObjectString](#export)
+* [NGT::getDistanceString](#export)
+* [NGT::getLeafNodeString](#export)
+* [NGT::getInternalNodeString](#export)
+* [NGT::setObjectString](#import)
+* [NGT::setDistanceString](#import)
+* [NGT::setLeafNodeString](#import)
+* [NGT::setInternalNodeString](#import)
+* [NGT::importIndex](#import)
+
 
 -----
 
@@ -77,21 +92,26 @@ $index = new Croco\NGT\Index();
 
 -----
 
-### <a name="open">void NGT::open(string filename)
+### <a name="open">void NGT::create(int dimension [, int edgeSizeForCreation, int edgeSizeForSearch, string distanceType, string objectType])
 
-open a database.
-
-
-### <a name="close">void NGT::close()
-
-close a database.
+create a index.
 
 ```php
 $index = new Croco\NGT\Index();
 
-$database = 'index';
-$index->open($database);
-$index->close();
+$dimension = 300;
+$edgeSizeForCreation = 10;
+$edgeSizeForSearch = 40;
+$distanceType = 'L2';
+$objectType = 'Float';
+
+$index->create(
+    $dimension,
+    $edgeSizeForCreation,
+    $edgeSizeForSearch,
+    $distanceType,
+    $objectType
+);
 ```
 
 -----
@@ -101,38 +121,19 @@ $index->close();
 insert a object.
 
 
-### <a name="save">void NGT::save()
-
-save a database.
-
-```php
-$index = new Croco\NGT\Index();
-$index->open('index');
-
-$index->insert([0.033712, -0.058824, 0.08323, 0.072274, ... ...]);
-
-$index->save();
-$index->close();
-```
-
------
-
 ### <a name="insertlist">void NGT::insertList()
 
 insert a object.
 
 ```php
 $index = new Croco\NGT\Index();
-$index->open('index');
+$index->create(300);
 
 $index->insertList([
     [0.033712, -0.058824, 0.08323, 0.072274, ... ...],
     [075103, 0.059359, 0.083976, 0.04961, ... ...],
     [ -0.026512, 0.048607, -0.021153, 0.043541, ... ...]
 ]);
-
-$index->save();
-$index->close();
 ```
 
 -----
@@ -143,11 +144,9 @@ search the nearest neighbors.
 
 ```php
 $index = new Croco\NGT\Index();
-$index->open('index');
+$index->create(300);
 
 $result = $index->search([0.074936, 0.05886, 0.083432, 0.049463, ... ...]);
-
-$index->close();
 
 print_r($result);
 ```
@@ -179,9 +178,6 @@ $index = new Croco\NGT\Index();
 $index->open('index');
 
 $index->remove(4);
-
-$index->save();
-$index->close();
 ```
 
 -----
@@ -190,11 +186,9 @@ $index->close();
 
 ```php
 $index = new Croco\NGT\Index();
-$index->open('index');
+$index->create(300);
 
 echo $index->getObject(3);
-
-$index->close();
 ```
 
 ```
@@ -202,23 +196,87 @@ $index->close();
 ```
 -----
 
-### <a name="createdb">void NGT::CreateDB()
+
+### <a name="export">void NGT::exportIndex()
 
 ```php
-Croco\NGT\Index::CreateDB(
-    'index',    // database path
-    300,        // dimension
-    10,         // edge size for creation
-    40,         // edge size for search
-    'L2',       // distance type
-    'Float'     // object type [Integer, Float]
+$index = new Croco\NGT\Index();
+$index->create(300);
+
+$index->insertList([
+    [0.033712, -0.058824, 0.08323, 0.072274, ... ...],
+    [075103, 0.059359, 0.083976, 0.04961, ... ...],
+    [ -0.026512, 0.048607, -0.021153, 0.043541, ... ...]
+]);
+
+
+$db = new \PDO(......);
+$stmt = $db->prepare(
+    'INSERT INTO `index` (`objects`, `distances`, `leafNodes`, `internalNodes`) '.
+                 'VALUES (:objects,  :distances,  :leafNodes,  :internalNodes)'
 );
 
 
-$index = new Croco\NGT\Index();
-$index->open('index');
-$index->close();
+$index->exportIndex();
+
+$stmt->bindValue(':objects',       $index->getObjectString(),       \PDO::PARAM_LOB);
+$stmt->bindValue(':distances',     $index->getDistanceString(),     \PDO::PARAM_LOB);
+$stmt->bindValue(':leafNodes',     $index->getLeafNodeString(),     \PDO::PARAM_LOB);
+$stmt->bindValue(':internalNodes', $index->getInternalNodeString(), \PDO::PARAM_LOB);
+$stmt->execute();
 ```
+
+-----
+
+
+### <a name="import">void NGT::importIndex()
+
+```php
+$index = new Croco\NGT\Index();
+$index->create(300);
+
+$db = new \PDO(......);
+
+$stmt = $db->prepare(
+    'SELECT `objects`, `distances`, `leafNodes`, `internalNodes` FROM `indexblob` WHERE `id` = :id'
+);
+$stmt->bindValue(':id', 1, \PDO::PARAM_INT);
+$stmt->execute();
+
+$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+$stmt->closeCursor();
+
+$index->setObjectString($row['objects']);
+$index->setDistanceString($row['distances']);
+$index->setLeafNodeString($row['leafNodes']);
+$index->setInternalNodeString($row['internalNodes']);
+
+$index->importIndex();
+
+$result = $index->search([0.074936, 0.05886, 0.083432, 0.049463, ... ...]);
+
+print_r($result);
+```
+
+```php
+[
+    [
+        'Rank'     => 1, 
+        'ID'       => 3
+        'Distance' => 0.00971914
+    ],
+    [
+        'Rank'     => 2, 
+        'ID'       => 52
+        'Distance' => 0.04755864
+    ],
+            :
+            :
+            :
+]
+```
+
+
 
 #### DistanceType
 | 距離関数          | 内容 |
@@ -231,3 +289,16 @@ $index->close();
 | Cosine           | コサイン類似度 |
 | NormalizedAngle  | 角度：正規化して保存 |
 | NormalizedCosine | コサイン類似度：正規化して保存 |
+
+
+#### Create Table
+```sql
+CREATE TABLE `index` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `objects` mediumblob NOT NULL,
+  `distances` mediumblob NOT NULL,
+  `leafNodes` mediumblob NOT NULL,
+  `internalNodes` mediumblob NOT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin
+```
