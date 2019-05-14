@@ -9,12 +9,12 @@ NGT-php is a PHP bindings for NGT.
 libngt
 
 ```
-$ curl -fSL "https://github.com/yahoojapan/NGT/archive/v1.6.2.tar.gz" -o "ngt-1.6.2.tgz"
-$ tar xf ngt-1.6.2.tgz
-$ cd NGT-1.6.2
+$ curl -fSL "https://github.com/yahoojapan/NGT/archive/v1.7.3.tar.gz" -o "ngt-1.7.3.tgz"
+$ tar xf ngt-1.7.3.tgz
+$ cd NGT-1.7.3
 $ mkdir build
 $ cd build
-$ cmake .. -DCMAKE_BUILD_TYPE=Release
+$ cmake .. -DNGT_AVX_DISABLED=ON -DCMAKE_BUILD_TYPE=Release
 $ make -j $(nproc)
 $ sudo make install
 ```
