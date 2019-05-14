@@ -32,7 +32,7 @@ $ sudo make install
 ```
 
 
-[libcroco_ngt](https://github.com/YujiroTakahashi/ngt-c/blob/master/README.md)
+[libcroco_ngt](https://github.com/YujiroTakahashi/ngt-c/blob/master/README.md)（ngt-c）
 
 ```
 $ curl -fSL "https://github.com/YujiroTakahashi/ngt-c/archive/v0.1.0.tar.gz" -o "croco-ngt-0.1.0.tgz"
