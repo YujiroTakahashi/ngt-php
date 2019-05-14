@@ -19,6 +19,19 @@ $ make -j $(nproc)
 $ sudo make install
 ```
 
+[libcroco_ngt](https://github.com/YujiroTakahashi/ngt-c/blob/master/README.md)
+
+```
+$ curl -fSL "https://github.com/YujiroTakahashi/ngt-c/archive/v0.1.0.tar.gz" -o "croco-ngt-0.1.0.tgz"
+$ tar xf croco-ngt-0.1.0.tgz
+$ cd ngt-c-0.1.0
+$ mkdir build
+$ cd build
+$ cmake .. -DCMAKE_BUILD_TYPE=Release
+$ make -j $(nproc)
+$ sudo make install
+```
+
 ## Building NGT for PHP
 
 ```
