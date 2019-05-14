@@ -19,6 +19,19 @@ $ make -j $(nproc)
 $ sudo make install
 ```
 
+[libprotobuf](https://github.com/protocolbuffers/protobuf/)
+
+```
+$ curl -fSL "https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protobuf-cpp-3.7.1.tar.gz" -o "protobuf-3.7.1.tgz"
+$ tar xf protobuf-3.7.1.tgz
+$ cd protobuf-3.7.1
+$ ./configure
+$ make -j $(nproc)
+$ make check
+$ sudo make install
+```
+
+
 [libcroco_ngt](https://github.com/YujiroTakahashi/ngt-c/blob/master/README.md)
 
 ```
